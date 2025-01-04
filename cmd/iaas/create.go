@@ -24,7 +24,7 @@ var createCmd = &cobra.Command{
 			},
 			SSHKey:        true,
 			KeyName:       "kumo",
-			DiskSize:      10,
+			DiskSize:      15,
 			InitScript:    "",
 			HAEnabled:     true,
 			ServerVolumes: []map[string]any{},
