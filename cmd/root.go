@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/0xAFz/kumo/cmd/iaas"
+	"github.com/0xAFz/kumo/cmd/status"
 	"github.com/spf13/cobra"
 )
 
@@ -21,4 +22,5 @@ func Execute() {
 
 func init() {
 	rootCmd.AddCommand(iaas.IaaSCmd)
+	rootCmd.AddCommand(status.StateCmd)
 }

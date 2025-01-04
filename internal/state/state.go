@@ -17,12 +17,12 @@ type State struct {
 }
 
 func WriteState(state State) error {
-	file, err := json.MarshalIndent(state, "", "	")
+	file, err := json.MarshalIndent(state, "", "    ")
 	if err != nil {
 		return err
 	}
 
-	return os.WriteFile(filename, file, 0644)
+	return os.WriteFile(filename, file, 0o644)
 }
 
 func GetState() (*State, error) {
