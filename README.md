@@ -28,7 +28,7 @@ kumo iaas status
 kumo iaas remove
 ```
 ## Todo
-- [ ] Add show state
+- [x] Add show state
 - [ ] Support other providers
 - [ ] Support other resources
 
