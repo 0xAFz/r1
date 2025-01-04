@@ -23,7 +23,7 @@ var statusCmd = &cobra.Command{
 			return
 		}
 
-		ips := make([]string, 1)
+		ips := make([]string, 0)
 
 		for _, v := range r.Data.Addresses {
 			for _, a := range v {
