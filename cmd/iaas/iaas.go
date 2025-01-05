@@ -9,7 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var resourceManager *vm.ResourceManager
+var (
+	region          string
+	resourceManager *vm.ResourceManager
+)
 
 var IaaSCmd = &cobra.Command{
 	Use:   "iaas",
@@ -21,8 +24,11 @@ var IaaSCmd = &cobra.Command{
 
 func init() {
 	config.LoadConfig()
+	createCmd.Flags().StringVar(&region, "region", "", "Region of the resource (required)")
 
-	apiClient := api.NewAPIClient(config.AppConfig.BaseURL, config.AppConfig.APIKey)
+	baseURL := vm.BaseURL + "/" + region
+
+	apiClient := api.NewAPIClient(baseURL, config.AppConfig.APIKey)
 
 	resourceManager = vm.NewResourceManager(apiClient)
 
