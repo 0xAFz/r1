@@ -33,7 +33,7 @@ var statusCmd = &cobra.Command{
 
 		s := state.State{
 			ID:     r.Data.ID,
-			IP:     ips[0],
+			IP:     ips,
 			Status: r.Data.Status,
 		}
 

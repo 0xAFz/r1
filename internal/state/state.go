@@ -11,9 +11,9 @@ const (
 )
 
 type State struct {
-	ID     string `json:"id"`
-	IP     string `json:"ip"`
-	Status string `json:"status"`
+	ID     string   `json:"id"`
+	IP     []string `json:"ip"`
+	Status string   `json:"status"`
 }
 
 func WriteState(state State) error {
