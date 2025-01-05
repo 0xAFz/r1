@@ -38,7 +38,7 @@ func (r *ResourceManager) GetResource(id string) (*api.ResourceResponse, error) 
 
 	resp, err := r.client.Get(endpoint)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create resource: %w", err)
+		return nil, fmt.Errorf("failed to get resource: %w", err)
 	}
 
 	var resourceResponse api.ResourceResponse
