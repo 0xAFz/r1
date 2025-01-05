@@ -7,6 +7,10 @@ import (
 	"github.com/0xAFz/kumo/internal/api"
 )
 
+const (
+	BaseURL = "https://napi.arvancloud.ir/ecc/v1/regions"
+)
+
 type ResourceManager struct {
 	client *api.APIClient
 }

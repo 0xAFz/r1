@@ -5,8 +5,7 @@ import (
 )
 
 type Config struct {
-	BaseURL string
-	APIKey  string
+	APIKey string
 }
 
 var AppConfig *Config
@@ -16,7 +15,6 @@ func LoadConfig() {
 	viper.ReadInConfig()
 	viper.AutomaticEnv()
 	AppConfig = &Config{
-		APIKey:  viper.GetString("ARVANCLOUD_APIKEY"),
-		BaseURL: viper.GetString("ARVANCLOUD_BASEURL"),
+		APIKey: viper.GetString("ARVANCLOUD_APIKEY"),
 	}
 }
