@@ -6,7 +6,7 @@ type CreateVMRequest struct {
 	Count            int              `json:"count"`
 	EnableBackup     bool             `json:"enable_backup"`
 	NetworkIDs       []string         `json:"network_ids"`
-	FlaverID         string           `json:"flavor_id"`
+	FlavorID         string           `json:"flavor_id"`
 	SecurityGroupIDs []map[string]any `json:"security_groups"`
 	SSHKey           bool             `json:"ssh_key"`
 	KeyName          string           `json:"key_name"`
