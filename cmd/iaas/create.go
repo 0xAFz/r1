@@ -76,14 +76,14 @@ var createCmd = &cobra.Command{
 
 func init() {
 	createCmd.Flags().StringVar(&name, "name", "", "Name of the resource (required)")
-	createCmd.Flags().IntVar(&count, "count", 1, "Number of resources to create (default: 1)")
-	createCmd.Flags().BoolVar(&enableBackups, "enable-backups", false, "Enable backups (default: false)")
+	createCmd.Flags().IntVar(&count, "count", 1, "Number of resources to create")
+	createCmd.Flags().BoolVar(&enableBackups, "enable-backups", false, "Enable backups")
 	createCmd.Flags().StringVar(&flavorID, "flavor-id", "", "ID of the flavor (required)")
-	createCmd.Flags().BoolVar(&sshKey, "ssh-key", false, "Enable SSH key (default: false)")
-	createCmd.Flags().StringVar(&keyName, "key-name", "kumo", "Name of the SSH key (default: kumo)")
-	createCmd.Flags().IntVar(&diskSize, "disk-size", 50, "Size of the disk in GB (default: 50)")
-	createCmd.Flags().BoolVar(&enableIPv6, "enable-ipv6", false, "Enable IPv6 (default: false)")
-	createCmd.Flags().StringVar(&imageID, "image-id", "6ea4bc95-fd05-4695-9c0a-d5a566d6b9da", "ID of the image (default: debian 12)")
+	createCmd.Flags().BoolVar(&sshKey, "ssh-key", false, "Enable SSH key")
+	createCmd.Flags().StringVar(&keyName, "key-name", "kumo", "Name of the SSH key")
+	createCmd.Flags().IntVar(&diskSize, "disk-size", 50, "Size of the disk in GB")
+	createCmd.Flags().BoolVar(&enableIPv6, "enable-ipv6", false, "Enable IPv6")
+	createCmd.Flags().StringVar(&imageID, "image-id", "6ea4bc95-fd05-4695-9c0a-d5a566d6b9da", "ID of the image")
 
 	createCmd.MarkFlagRequired("name")
 	createCmd.MarkFlagRequired("flavor-id")
