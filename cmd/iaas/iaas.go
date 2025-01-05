@@ -23,8 +23,10 @@ var IaaSCmd = &cobra.Command{
 }
 
 func init() {
+	IaaSCmd.Flags().StringVar(&region, "region", "", "Region of the resource (required)")
+	IaaSCmd.MarkFlagRequired("region")
+
 	config.LoadConfig()
-	createCmd.Flags().StringVar(&region, "region", "", "Region of the resource (required)")
 
 	baseURL := vm.BaseURL + "/" + region
 
