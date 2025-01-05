@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	filename = "state.json"
+	filename = ".state.json"
 )
 
 type State map[string]struct {
