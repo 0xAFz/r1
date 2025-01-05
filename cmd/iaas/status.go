@@ -17,29 +17,31 @@ var statusCmd = &cobra.Command{
 			return
 		}
 
-		r, err := resourceManager.GetResource(current.ID)
-		if err != nil {
-			fmt.Printf("failed to get resource: %v\n", err)
-			return
-		}
+		for k := range *current {
+			r, err := resourceManager.GetResource(k)
+			if err != nil {
+				fmt.Printf("failed to get resource: %v\n", err)
+				return
+			}
 
-		ips := make([]string, 0)
+			ips := make([]string, 0)
 
-		for _, v := range r.Data.Addresses {
-			for _, a := range v {
-				ips = append(ips, a.Addr)
+			for _, v := range r.Data.Addresses {
+				for _, a := range v {
+					ips = append(ips, a.Addr)
+				}
+			}
+
+			(*current)[k] = struct {
+				Status string   `json:"status"`
+				IP     []string `json:"ip"`
+			}{
+				Status: r.Data.Status,
+				IP:     ips,
 			}
 		}
 
-		s := state.State{
-			ID:     r.Data.ID,
-			IP:     ips,
-			Status: r.Data.Status,
-		}
-
-		fmt.Println(s)
-
-		if err := state.WriteState(s); err != nil {
+		if err := state.WriteState(*current); err != nil {
 			fmt.Printf("failed to write state: %v\n", err)
 			return
 		}

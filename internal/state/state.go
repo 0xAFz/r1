@@ -10,10 +10,9 @@ const (
 	filename = "state.json"
 )
 
-type State struct {
-	ID     string   `json:"id"`
-	IP     []string `json:"ip"`
+type State map[string]struct {
 	Status string   `json:"status"`
+	IP     []string `json:"ip"`
 }
 
 func WriteState(state State) error {
