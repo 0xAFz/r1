@@ -2,7 +2,7 @@
 
 Cli tool for working with Cloud providers
 
-Supported providers:
+## Supported providers:
 - ArvanCloud
 
 ## Build
@@ -25,10 +25,12 @@ kumo iaas status
 ```
 3. Destroy all resources
 ```bash
-kumo iaas remove
+kumo iaas destroy
 ```
 ## Todo
 - [x] Add show state
+- [x] Destroy all resources
+- [x] Get resources info with flags
 - [ ] Support other providers
-- [ ] Support other resources
+- [ ] Support other resources (CDN, Storage, Container, ...)
 
