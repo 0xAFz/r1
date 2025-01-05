@@ -7,26 +7,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var removeCmd = &cobra.Command{
-	Use:   "remove",
-	Short: "Remove vm from the cloud",
+var destroyCmd = &cobra.Command{
+	Use:   "destroy",
+	Short: "Destroy all resources from the cloud",
 	Run: func(_ *cobra.Command, _ []string) {
-		s, err := state.GetState()
+		current, err := state.GetState()
 		if err != nil {
 			fmt.Printf("failed to get state: %v\n", err)
 			return
 		}
 
-		if err := resourceManager.DeleteResource(s.ID); err != nil {
-			fmt.Printf("failed to delete resource: %v\n", err)
+		for k := range *current {
+			if err := resourceManager.DeleteResource(k); err != nil {
+				fmt.Printf("failed to delete resource: %v\n", err)
+				return
+			}
+
+			delete(*current, k)
+		}
+
+		if err := state.WriteState(*current); err != nil {
+			fmt.Printf("failed to write state: %v\n", err)
 			return
 		}
 
-		if err := state.WriteState(state.State{}); err != nil {
-			fmt.Printf("failed to update state: %v\n", err)
-			return
-		}
-
-		fmt.Println("Resource removed successfully")
+		fmt.Println("All Resources destroyed successfully")
 	},
 }

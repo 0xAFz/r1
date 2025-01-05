@@ -27,6 +27,6 @@ func init() {
 	resourceManager = vm.NewResourceManager(apiClient)
 
 	IaaSCmd.AddCommand(createCmd)
-	IaaSCmd.AddCommand(removeCmd)
+	IaaSCmd.AddCommand(destroyCmd)
 	IaaSCmd.AddCommand(statusCmd)
 }
