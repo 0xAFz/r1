@@ -9,15 +9,17 @@ import (
 )
 
 var (
-	name          string
-	count         int
-	enableBackups bool
-	flavorID      string
-	sshKey        bool
-	keyName       string
-	diskSize      int
-	enableIPv6    bool
-	imageID       string
+	name            string
+	count           int
+	enableBackups   bool
+	flavorID        string
+	sshKey          bool
+	keyName         string
+	diskSize        int
+	enableIPv6      bool
+	imageID         string
+	securityGroupID string
+	networkIDs      []string
 )
 
 var createCmd = &cobra.Command{
@@ -35,10 +37,10 @@ var createCmd = &cobra.Command{
 			BackupName:   nil,
 			Count:        count,
 			EnableBackup: enableBackups,
-			NetworkIDs:   []string{"b81f15e7-38ba-483e-8aa3-39ace15094d7"},
+			NetworkIDs:   networkIDs,
 			FlavorID:     flavorID,
 			SecurityGroupIDs: []map[string]any{
-				{"name": "010c38b1-5259-44dd-a82c-161aa492809b"},
+				{"name": securityGroupID},
 			},
 			SSHKey:        sshKey,
 			KeyName:       keyName,
@@ -81,10 +83,15 @@ func init() {
 	createCmd.Flags().StringVar(&flavorID, "flavor-id", "", "ID of the flavor (required)")
 	createCmd.Flags().BoolVar(&sshKey, "ssh-key", false, "Enable SSH key")
 	createCmd.Flags().StringVar(&keyName, "key-name", "kumo", "Name of the SSH key")
-	createCmd.Flags().IntVar(&diskSize, "disk-size", 50, "Size of the disk in GB")
+	createCmd.Flags().IntVar(&diskSize, "disk-size", 25, "Size of the disk in GB")
 	createCmd.Flags().BoolVar(&enableIPv6, "enable-ipv6", false, "Enable IPv6")
-	createCmd.Flags().StringVar(&imageID, "image-id", "6ea4bc95-fd05-4695-9c0a-d5a566d6b9da", "ID of the image")
+	createCmd.Flags().StringVar(&imageID, "image-id", "", "ID of the image")
+	createCmd.Flags().StringSliceVar(&networkIDs, "network-ids", nil, "ID of the network")
+	createCmd.Flags().StringVar(&securityGroupID, "security-group-id", "", "ID of the security group")
 
 	createCmd.MarkFlagRequired("name")
 	createCmd.MarkFlagRequired("flavor-id")
+	createCmd.MarkFlagRequired("image-id")
+	createCmd.MarkFlagRequired("network-ids")
+	createCmd.MarkFlagRequired("security-group-id")
 }
