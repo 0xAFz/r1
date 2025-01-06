@@ -24,11 +24,11 @@ kumo iaas --region eu-west1-a create --name kumo --flavor-id eco-1-1-0
 ```
 2. Get resource details
 ```bash
-kumo iaas status
+kumo iaas --region eu-west1-a status
 ```
 3. Destroy all resources
 ```bash
-kumo iaas destroy
+kumo iaas --region eu-west1-a destroy
 ```
 4. Show local state `.state.json`
 ```bash
