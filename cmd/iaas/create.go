@@ -62,7 +62,7 @@ var createCmd = &cobra.Command{
 			Status string   `json:"status"`
 			IP     []string `json:"ip"`
 		}{
-			Status: "",
+			Status: "BUILD",
 			IP:     []string{},
 		}
 
