@@ -17,8 +17,8 @@ var destroyCmd = &cobra.Command{
 			return
 		}
 
-		for k := range *current {
-			if err := resourceManager.DeleteResource(k); err != nil {
+		for k, v := range *current {
+			if err := resourceManager.DeleteResource(v.Region, k); err != nil {
 				fmt.Printf("failed to delete resource: %v\n", err)
 				return
 			}

@@ -9,6 +9,7 @@ import (
 )
 
 var (
+	region          string
 	name            string
 	count           int
 	enableBackups   bool
@@ -52,7 +53,7 @@ var createCmd = &cobra.Command{
 			ImageID:       imageID,
 		}
 
-		r, err := resourceManager.CreateResource(vmRequest)
+		r, err := resourceManager.CreateResource(region, vmRequest)
 		if err != nil {
 			fmt.Println("failed to create resource:", err)
 			return
@@ -61,9 +62,11 @@ var createCmd = &cobra.Command{
 		(*current)[r.Data.ID] = struct {
 			Status string   `json:"status"`
 			IP     []string `json:"ip"`
+			Region string   `json:"region"`
 		}{
 			Status: "BUILD",
 			IP:     []string{},
+			Region: region,
 		}
 
 		if err := state.WriteState(*current); err != nil {
@@ -88,7 +91,9 @@ func init() {
 	createCmd.Flags().StringVar(&imageID, "image-id", "", "ID of the image")
 	createCmd.Flags().StringSliceVar(&networkIDs, "network-ids", nil, "ID of the network")
 	createCmd.Flags().StringVar(&securityGroupID, "security-group-id", "", "ID of the security group")
+	createCmd.Flags().StringVar(&region, "region", "", "Region of the resource (required)")
 
+	createCmd.MarkFlagRequired("region")
 	createCmd.MarkFlagRequired("name")
 	createCmd.MarkFlagRequired("flavor-id")
 	createCmd.MarkFlagRequired("image-id")

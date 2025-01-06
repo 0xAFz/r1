@@ -21,8 +21,8 @@ func NewResourceManager(client *api.APIClient) *ResourceManager {
 	}
 }
 
-func (r *ResourceManager) CreateResource(vmRequest api.CreateVMRequest) (*api.CreateVMResponse, error) {
-	endpoint := "/servers"
+func (r *ResourceManager) CreateResource(region string, vmRequest api.CreateVMRequest) (*api.CreateVMResponse, error) {
+	endpoint := fmt.Sprintf("/%s/servers", region)
 
 	resp, err := r.client.Post(endpoint, vmRequest)
 	if err != nil {
@@ -37,8 +37,8 @@ func (r *ResourceManager) CreateResource(vmRequest api.CreateVMRequest) (*api.Cr
 	return &createVMResponse, nil
 }
 
-func (r *ResourceManager) GetResource(id string) (*api.ResourceResponse, error) {
-	endpoint := fmt.Sprintf("/servers/%s", id)
+func (r *ResourceManager) GetResource(region, id string) (*api.ResourceResponse, error) {
+	endpoint := fmt.Sprintf("/%s/servers/%s", region, id)
 
 	resp, err := r.client.Get(endpoint)
 	if err != nil {
@@ -53,8 +53,8 @@ func (r *ResourceManager) GetResource(id string) (*api.ResourceResponse, error) 
 	return &resourceResponse, nil
 }
 
-func (r *ResourceManager) DeleteResource(id string) error {
-	endpoint := fmt.Sprintf("/servers/%s?forceDelete=true", id)
+func (r *ResourceManager) DeleteResource(region, id string) error {
+	endpoint := fmt.Sprintf("/%s/servers/%s?forceDelete=true", region, id)
 
 	_, err := r.client.Delete(endpoint)
 	if err != nil {

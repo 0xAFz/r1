@@ -13,6 +13,7 @@ const (
 type State map[string]struct {
 	Status string   `json:"status"`
 	IP     []string `json:"ip"`
+	Region string   `json:"region"`
 }
 
 func WriteState(state State) error {

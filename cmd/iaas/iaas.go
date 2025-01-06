@@ -2,7 +2,6 @@ package iaas
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/0xAFz/kumo/internal/api"
 	"github.com/0xAFz/kumo/internal/config"
@@ -10,30 +9,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	region          string
-	resourceManager *vm.ResourceManager
-)
+var resourceManager *vm.ResourceManager
 
 var IaaSCmd = &cobra.Command{
 	Use:   "iaas",
 	Short: "Manage iaas actions",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		baseURL := vm.BaseURL + "/" + region
-		log.Println("baseURL: ", baseURL)
-
-		apiClient := api.NewAPIClient(baseURL, config.AppConfig.APIKey)
+		apiClient := api.NewAPIClient(vm.BaseURL, config.AppConfig.APIKey)
 		resourceManager = vm.NewResourceManager(apiClient)
 	},
 	Run: func(_ *cobra.Command, _ []string) {
-		fmt.Println("Usage: kumo iaas <action> (create|remove|status)")
+		fmt.Println("Usage: kumo iaas <action> (create|destroy|status)")
 	},
 }
 
 func init() {
-	IaaSCmd.PersistentFlags().StringVar(&region, "region", "", "Region of the resource (required)")
-	IaaSCmd.MarkPersistentFlagRequired("region")
-
 	config.LoadConfig()
 
 	IaaSCmd.AddCommand(createCmd)

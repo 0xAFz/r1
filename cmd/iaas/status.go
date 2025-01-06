@@ -17,8 +17,8 @@ var statusCmd = &cobra.Command{
 			return
 		}
 
-		for k := range *current {
-			r, err := resourceManager.GetResource(k)
+		for k, v := range *current {
+			r, err := resourceManager.GetResource(v.Region, k)
 			if err != nil {
 				fmt.Printf("failed to get resource: %v\n", err)
 				return
@@ -32,13 +32,10 @@ var statusCmd = &cobra.Command{
 				}
 			}
 
-			(*current)[k] = struct {
-				Status string   `json:"status"`
-				IP     []string `json:"ip"`
-			}{
-				Status: r.Data.Status,
-				IP:     ips,
-			}
+			v.IP = ips
+			v.Status = r.Data.Status
+
+			(*current)[k] = v
 		}
 
 		if err := state.WriteState(*current); err != nil {
