@@ -46,6 +46,7 @@ kumo state
 - [x] Add show state
 - [x] Destroy all resources
 - [x] Get resources info with flags
+- [x] Support various region resource creation
 - [ ] Support other providers
 - [ ] Support other resources (CDN, Storage, Container, ...)
 
