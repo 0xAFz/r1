@@ -21,7 +21,7 @@ kumo iaas create --region eu-west1-a --name kumo --flavor-id eco-1-1-0 --image-i
 ```
 - Create a vm resource on tehran simin data center
 ```bash
-./kumo iaas create --region ir-thr-si1 --name kumo --flovor-id eco-1-1-0 --image-id "fb7b732b-5d1f-43d9-9377-8418d7ad303f" --key-name kumo --ssh-key --disk-size 25 --count 1 --network-ids "bab96191-dad5-46bb-96fd-3e29086aa504" --security-group-id "3d2df2b7-2ed1-4998-a87d-974b0ad4bd4e"
+kumo iaas create --region ir-thr-si1 --name kumo --flavor-id eco-1-1-0 --image-id "fb7b732b-5d1f-43d9-9377-8418d7ad303f" --key-name kumo --ssh-key --disk-size 25 --count 1 --network-ids "bab96191-dad5-46bb-96fd-3e29086aa504" --security-group-id "3d2df2b7-2ed1-4998-a87d-974b0ad4bd4e"
 ```
 - Get resource details
 ```bash
