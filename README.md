@@ -51,6 +51,6 @@ kumo state
 - [x] Destroy all resources
 - [x] Get resources info with flags
 - [x] Support various region resource creation
-- [ ] Support other providers
+- [ ] Read states from json instead of CLI args
 - [ ] Support other resources (CDN, Storage, Container, ...)
 
