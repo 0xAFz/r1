@@ -10,47 +10,71 @@ Cli tool for working with Cloud providers
 make
 ```
 ## Usage
-0. Setup `.env`
+At first setup your `.env`
 ```bash
 cp .env.example .env
 <your-editor> .env
 ```
-- Create a vm resource on germany data center
+
+Create desired state file
 ```bash
-kumo iaas create --region eu-west1-a --name kumo --flavor-id eco-1-1-0 --image-id "514508bd-0a60-4c88-ae72-3e7b7dcc3968" --network-ids "30a8d5e8-4752-4974-bccc-9e49f5ccc506" --security-group-id "71cf34ab-f0a7-4663-ba98-a2db7d0a1972" --key-name kumo --ssh-key --disk-size 25 --count 1
+touch kumo.json
 ```
-- Create a vm resource on tehran simin data center
+
+Write resources in this strcuture
+```json
+[
+    {
+        "region": "ir-thr-si1",
+        "data": {
+            "name": "kumo",
+            "backup_name": null,
+            "count": 1,
+            "enable_backup": false,
+            "network_ids": [
+                "8bcaf216-055b-4bc8-92f1-d18b8285bea5"
+            ],
+            "flavor_id": "eco-1-1-0",
+            "security_groups": [
+                {
+                    "name": "e699ac81-538d-49a4-80c4-5ebe3b79b22d"
+                }
+            ],
+            "ssh_key": true,
+            "key_name": "kumo",
+            "disk_size": 25,
+            "init_script": "",
+            "ha_enabled": true,
+            "server_volumes": [],
+            "enable_ipv4": true,
+            "enable_ipv6": false,
+            "image_id": "fb7b732b-5d1f-43d9-9377-8418d7ad303f"
+        }
+    }
+]
+```
+
+Apply resources
 ```bash
-kumo iaas create --region ir-thr-si1 --name kumo --flavor-id eco-1-1-0 --image-id "fb7b732b-5d1f-43d9-9377-8418d7ad303f" --key-name kumo --ssh-key --disk-size 25 --count 1 --network-ids "bab96191-dad5-46bb-96fd-3e29086aa504" --security-group-id "4675ddbb-97d6-4b7a-9fa8-3c5caf7aa206"
+kumo iaas apply
 ```
-- Get resource details
-```bash
-kumo iaas status
-```
-- Destroy all resources
-```bash
-kumo iaas destroy
-```
-- Show local state `.state.json`
+
+Show current state
 ```bash
 kumo state
 ```
-```json
-{
-  "7dc6a41b-03fb-482b": {
-    "status": "ACTIVE",
-    "ip": [
-      "194.5.193.0"
-    ],
-    "region": "eu-west1-a"
-  }
-}
-```
-## Todo
-- [x] Add show state
-- [x] Destroy all resources
-- [x] Get resources info with flags
-- [x] Support various region resource creation
-- [ ] Read states from json instead of CLI args
-- [ ] Support other resources (CDN, Storage, Container, ...)
 
+Update current state
+```bash
+kumo iaas status
+```
+
+Delete All resources
+```bash
+kumo iaas destroy
+```
+
+## Todo
+- [x] Support various region resource creation
+- [x] Read desired state from json instead of CLI args
+- [ ] Support other resources (CDN, Storage, Container, ...)
