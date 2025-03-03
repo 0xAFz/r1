@@ -1,6 +1,6 @@
 package api
 
-type CreateVMRequest struct {
+type iaasCreate struct {
 	Name             string           `json:"name"`
 	BackupName       *string          `json:"backup_name"`
 	Count            int              `json:"count"`
@@ -14,11 +14,12 @@ type CreateVMRequest struct {
 	InitScript       string           `json:"init_script"`
 	HAEnabled        bool             `json:"ha_enabled"`
 	ServerVolumes    []map[string]any `json:"server_volumes"`
+	EnableIPv4       bool             `json:"enable_ipv4"`
 	EnableIPv6       bool             `json:"enable_ipv6"`
 	ImageID          string           `json:"image_id"`
 }
 
-// type Image struct {
+// type image struct {
 // 	ID       string `json:"id"`
 // 	Name     string `json:"name"`
 // 	OS       string `json:"os"`
@@ -32,48 +33,28 @@ type CreateVMRequest struct {
 // 	Documents []interface{} `json:"documents"`
 // }
 
-type CreateVMResponse struct {
+type IaasResponse struct {
 	Data struct {
-		ID string `json:"id"`
-		// Name           string      `json:"name"`
-		// Flavor         *string     `json:"flavor"`
-		// Status         string      `json:"status"`
-		// Image          Image       `json:"image"`
-		// Created        string      `json:"created"`
-		// Password       string      `json:"password"`
-		// TaskState      *string     `json:"task_state"`
-		// KeyName        string      `json:"key_name"`
-		// ArNext         *string     `json:"ar_next"`
-		// SecurityGroups interface{} `json:"security_groups"`
-		// Addresses      interface{} `json:"addresses"`
-		// Tags           []string    `json:"tags"`
-		// HAEnabled      bool        `json:"ha_enabled"`
-		// ClusterID      string      `json:"cluster_id"`
+		ID        string               `json:"id"`
+		Name      string               `json:"name"`
+		Status    string               `json:"status"`
+		Addresses map[string][]address `json:"addresses"`
+		Created   string               `json:"created"`
+		// Flavor flavor `json:"flavor"`
+		// Image  image  `json:"image"`
+		// Password       string               `json:"password"`
+		// TaskState      *string              `json:"task_state"`
+		// KeyName        string               `json:"key_name"`
+		// ARNext         string               `json:"ar_next"`
+		// SecurityGroups []securityGroup      `json:"security_groups"`
+		// Tags           []string             `json:"tags"`
+		// HAEnabled      bool                 `json:"ha_enabled"`
+		// ClusterID      string               `json:"cluster_id"`
 	} `json:"data"`
 	// Message string `json:"message"`
 }
 
-type ResourceResponse struct {
-	Data struct {
-		ID string `json:"id"`
-		// Name             string        `json:"name"`
-		// Flavor           Flavor        `json:"flavor"`
-		Status string `json:"status"`
-		// Image            Image         `json:"image"`
-		// Created          string        `json:"created"`
-		// Password         string        `json:"password"`
-		// TaskState        *string   `json:"task_state"`
-		// KeyName          string        `json:"key_name"`
-		// ARNext           string        `json:"ar_next"`
-		// SecurityGroups   []SecurityGroup `json:"security_groups"`
-		Addresses map[string][]Address `json:"addresses"`
-		// Tags             []string      `json:"tags"`
-		// HAEnabled        bool          `json:"ha_enabled"`
-		// ClusterID        string        `json:"cluster_id"`
-	} `json:"data"`
-}
-
-// type Flavor struct {
+// type flavor struct {
 // 	ID     string `json:"id"`
 // 	Name   string `json:"name"`
 // 	RAM    int    `json:"ram"`
@@ -82,7 +63,7 @@ type ResourceResponse struct {
 // 	Disk   int    `json:"disk"`
 // }
 
-// type Image struct {
+// type image struct {
 // 	ID       string            `json:"id"`
 // 	Name     string            `json:"name"`
 // 	OS       string            `json:"os"`
@@ -93,7 +74,7 @@ type ResourceResponse struct {
 // 	Documents []interface{}    `json:"documents"`
 // }
 
-// type SecurityGroup struct {
+// type securityGroup struct {
 // 	ID          string   `json:"id"`
 // 	Description string   `json:"description"`
 // 	Name        string   `json:"name"`
@@ -104,10 +85,20 @@ type ResourceResponse struct {
 // 	IPAddresses []string `json:"ip_addresses"`
 // }
 
-type Address struct {
-	// MacAddr  string `json:"mac_addr"`
-	// Version  string `json:"version"`
-	Addr string `json:"addr"`
-	// Type     string `json:"type"`
-	// IsPublic bool   `json:"is_public"`
+type address struct {
+	MacAddr  string `json:"mac_addr"`
+	Version  string `json:"version"`
+	Addr     string `json:"addr"`
+	Type     string `json:"type"`
+	IsPublic bool   `json:"is_public"`
+}
+
+type IaasCreateRequest struct {
+	Region string `json:"region"`
+	Data   iaasCreate
+}
+
+type IaasResource struct {
+	Region string `json:"region"`
+	IaasResponse
 }

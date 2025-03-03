@@ -1,0 +1,26 @@
+[
+    {
+        "region": "ir-thr-si1",
+        "data": {
+            "name": "kumo",
+            "backup_name": null,
+            "count": 1,
+            "enable_backup": false,
+            "flavor_id": "eco-1-1-0",
+            "security_groups": [
+                {
+                    "name": "e699ac81-538d-49a4"
+                }
+            ],
+            "ssh_key": true,
+            "key_name": "kumo",
+            "disk_size": 25,
+            "init_script": "",
+            "ha_enabled": true,
+            "server_volumes": [],
+            "enable_ipv4": true,
+            "enable_ipv6": false,
+            "image_id": "fb7b732b-5d1f-43d9-9377-8418d7ad303f"
+        }
+    }
+]

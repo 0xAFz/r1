@@ -3,34 +3,32 @@ package iaas
 import (
 	"fmt"
 
+	"github.com/0xAFz/kumo/internal/api"
 	"github.com/0xAFz/kumo/internal/state"
 	"github.com/spf13/cobra"
 )
 
 var destroyCmd = &cobra.Command{
 	Use:   "destroy",
-	Short: "Destroy all resources from the cloud",
+	Short: "Destroy Kumo-managed infrastructure.",
 	Run: func(_ *cobra.Command, _ []string) {
-		current, err := state.GetState()
+		current, err := state.ReadCurrentState()
 		if err != nil {
-			fmt.Printf("failed to get state: %v\n", err)
+			fmt.Println(err)
 			return
 		}
 
-		for k, v := range *current {
-			if err := resourceManager.DeleteResource(v.Region, k); err != nil {
-				fmt.Printf("failed to delete resource: %v\n", err)
+		for _, v := range current {
+			if err := resourceManager.DeleteResource(v.Region, v.Data.ID); err != nil {
+				fmt.Printf("%s: %v\n", v.Data.Name, err)
 				return
 			}
-
-			delete(*current, k)
+			fmt.Printf("Deleted Resource: %s\n", v.Data.Name)
 		}
 
-		if err := state.WriteState(*current); err != nil {
-			fmt.Printf("failed to write state: %v\n", err)
+		if err := state.WriteCurrentState([]api.IaasResource{}); err != nil {
+			fmt.Println("writing current state:", err)
 			return
 		}
-
-		fmt.Println("All Resources destroyed successfully")
 	},
 }

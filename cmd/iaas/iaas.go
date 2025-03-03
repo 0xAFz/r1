@@ -19,14 +19,14 @@ var IaaSCmd = &cobra.Command{
 		resourceManager = vm.NewResourceManager(apiClient)
 	},
 	Run: func(_ *cobra.Command, _ []string) {
-		fmt.Println("Usage: kumo iaas <action> (create|destroy|status)")
+		fmt.Println("Usage: kumo iaas <action> (apply|destroy|status)")
 	},
 }
 
 func init() {
 	config.LoadConfig()
 
-	IaaSCmd.AddCommand(createCmd)
+	IaaSCmd.AddCommand(applyCmd)
 	IaaSCmd.AddCommand(destroyCmd)
 	IaaSCmd.AddCommand(statusCmd)
 }

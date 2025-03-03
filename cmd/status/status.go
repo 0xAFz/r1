@@ -10,17 +10,17 @@ import (
 
 var StateCmd = &cobra.Command{
 	Use:   "state",
-	Short: "Show current state",
+	Short: "Shows the attributes of a resource in the Kumo state.",
 	Run: func(_ *cobra.Command, _ []string) {
-		s, err := state.GetState()
+		s, err := state.ReadCurrentState()
 		if err != nil {
-			fmt.Printf("failed to get state: %v\n", err)
+			fmt.Println(err)
 			return
 		}
 
 		f, err := json.MarshalIndent(s, "", "  ")
 		if err != nil {
-			fmt.Printf("failed to get json state: %v\n", err)
+			fmt.Printf("marshaling current state: %v\n", err)
 			return
 		}
 

@@ -21,36 +21,36 @@ func NewResourceManager(client *api.APIClient) *ResourceManager {
 	}
 }
 
-func (r *ResourceManager) CreateResource(region string, vmRequest api.CreateVMRequest) (*api.CreateVMResponse, error) {
-	endpoint := fmt.Sprintf("/%s/servers", region)
+func (r *ResourceManager) CreateResource(req api.IaasCreateRequest) (*api.IaasResponse, error) {
+	endpoint := fmt.Sprintf("/%s/servers", req.Region)
 
-	resp, err := r.client.Post(endpoint, vmRequest)
+	resp, err := r.client.Post(endpoint, req.Data)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create resource: %w", err)
+		return nil, fmt.Errorf("create resource: %w", err)
 	}
 
-	var createVMResponse api.CreateVMResponse
-	if err := json.Unmarshal(resp, &createVMResponse); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response: %w", err)
+	var createResp api.IaasResponse
+	if err := json.Unmarshal(resp, &createResp); err != nil {
+		return nil, fmt.Errorf("unmarshal response: %w", err)
 	}
 
-	return &createVMResponse, nil
+	return &createResp, nil
 }
 
-func (r *ResourceManager) GetResource(region, id string) (*api.ResourceResponse, error) {
+func (r *ResourceManager) GetResource(region, id string) (*api.IaasResponse, error) {
 	endpoint := fmt.Sprintf("/%s/servers/%s", region, id)
 
 	resp, err := r.client.Get(endpoint)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get resource: %w", err)
+		return nil, fmt.Errorf("get resource: %w", err)
 	}
 
-	var resourceResponse api.ResourceResponse
-	if err := json.Unmarshal(resp, &resourceResponse); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response: %w", err)
+	var iaasResp api.IaasResponse
+	if err := json.Unmarshal(resp, &iaasResp); err != nil {
+		return nil, fmt.Errorf("unmarshal response: %w", err)
 	}
 
-	return &resourceResponse, nil
+	return &iaasResp, nil
 }
 
 func (r *ResourceManager) DeleteResource(region, id string) error {
@@ -58,7 +58,7 @@ func (r *ResourceManager) DeleteResource(region, id string) error {
 
 	_, err := r.client.Delete(endpoint)
 	if err != nil {
-		return fmt.Errorf("failed to create resource: %w", err)
+		return fmt.Errorf("delete resource: %w", err)
 	}
 
 	return nil
