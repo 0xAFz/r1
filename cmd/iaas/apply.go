@@ -2,6 +2,7 @@ package iaas
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/0xAFz/kumo/internal/api"
 	"github.com/0xAFz/kumo/internal/state"
@@ -42,12 +43,29 @@ var applyCmd = &cobra.Command{
 					fmt.Printf("%s: %v\n", req.Data.Name, err)
 					continue
 				}
-				r := api.IaasResource{
+				newResource := api.IaasResource{
 					Region:       req.Region,
 					IaasResponse: *resp,
 				}
-				newState = append(newState, r)
-				fmt.Printf("Created VM %s with ID %s\n", req.Data.Name, resp.Data.ID)
+				start := time.Now()
+				waitCount := 1
+				for {
+					fmt.Printf("Waiting to create [%s] resource %d\n", req.Data.Name, waitCount)
+					time.Sleep(time.Second * 1)
+					waitCount++
+					r, err := resourceManager.GetResource(req.Region, resp.Data.ID)
+					if err != nil {
+						fmt.Printf("failed to get resource: %v\n", err)
+						continue
+					}
+					if r.Data.Status != "ACTIVE" {
+						continue
+					}
+					newResource.Data = r.Data
+					break
+				}
+				fmt.Printf("Created: %s - %v\n", req.Data.Name, time.Since(start))
+				newState = append(newState, newResource)
 			} else {
 				// Keep existing VM
 				newState = append(newState, existing)
@@ -57,18 +75,16 @@ var applyCmd = &cobra.Command{
 		// Process current state: delete unwanted VMs
 		for name, vm := range currentMap {
 			if _, keep := desiredMap[name]; !keep {
-				err := resourceManager.DeleteResource(vm.Region, vm.Data.ID)
-				if err != nil {
+				if err := resourceManager.DeleteResource(vm.Region, vm.Data.ID); err != nil {
 					fmt.Println(err)
 					continue
-				} else {
-					fmt.Printf("Deleted Resource: %s\n", name)
 				}
+				fmt.Printf("Destroyed: %s\n", name)
 			}
 		}
 
 		if err := state.WriteCurrentState(newState); err != nil {
-			fmt.Println("writing state:", err)
+			fmt.Println("update current state:", err)
 			return
 		}
 	},

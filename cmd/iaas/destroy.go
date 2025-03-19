@@ -23,11 +23,11 @@ var destroyCmd = &cobra.Command{
 				fmt.Printf("%s: %v\n", v.Data.Name, err)
 				return
 			}
-			fmt.Printf("Deleted Resource: %s\n", v.Data.Name)
+			fmt.Printf("Destroyed: %s\n", v.Data.Name)
 		}
 
 		if err := state.WriteCurrentState([]api.IaasResource{}); err != nil {
-			fmt.Println("writing current state:", err)
+			fmt.Println("update current state:", err)
 			return
 		}
 	},
