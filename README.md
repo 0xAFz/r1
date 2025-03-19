@@ -64,11 +64,6 @@ Show current state
 kumo state
 ```
 
-Update current state
-```bash
-kumo iaas status
-```
-
 Delete All resources
 ```bash
 kumo iaas destroy
