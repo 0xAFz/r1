@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/0xAFz/kumo/internal/api"
+	"github.com/0xAFz/r1/internal/api"
 )
 
 const (
-	current = ".state.json"
-	desired = "kumo.json"
+	current = ".r1state.json"
+	desired = "r1.json"
 )
 
 func ReadDesiredState() ([]api.ArvanInstanceRequest, error) {

@@ -2,7 +2,7 @@
     {
         "region": "ir-thr-si1",
         "data": {
-            "name": "kumo",
+            "name": "r1",
             "backup_name": null,
             "count": 1,
             "enable_backup": false,
@@ -13,7 +13,7 @@
                 }
             ],
             "ssh_key": true,
-            "key_name": "kumo",
+            "key_name": "r1",
             "disk_size": 25,
             "init_script": "",
             "ha_enabled": true,

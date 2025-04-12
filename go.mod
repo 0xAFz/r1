@@ -1,4 +1,4 @@
-module github.com/0xAFz/kumo
+module github.com/0xAFz/r1
 
 go 1.22.5
 

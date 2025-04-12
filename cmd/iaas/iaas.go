@@ -3,9 +3,9 @@ package iaas
 import (
 	"fmt"
 
-	"github.com/0xAFz/kumo/internal/api"
-	"github.com/0xAFz/kumo/internal/config"
-	"github.com/0xAFz/kumo/internal/vm"
+	"github.com/0xAFz/r1/internal/api"
+	"github.com/0xAFz/r1/internal/config"
+	"github.com/0xAFz/r1/internal/vm"
 	"github.com/spf13/cobra"
 )
 

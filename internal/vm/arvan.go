@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/0xAFz/kumo/internal/api"
+	"github.com/0xAFz/r1/internal/api"
 )
 
 const (

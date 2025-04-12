@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/0xAFz/kumo/internal/api"
-	"github.com/0xAFz/kumo/internal/state"
+	"github.com/0xAFz/r1/internal/api"
+	"github.com/0xAFz/r1/internal/state"
 	"github.com/spf13/cobra"
 )
 
 var destroyCmd = &cobra.Command{
 	Use:   "destroy",
-	Short: "Destroy kumo-managed infrastructure.",
+	Short: "Destroy R1-managed infrastructure.",
 	Run: func(_ *cobra.Command, _ []string) {
 		current, err := state.ReadCurrentState()
 		if err != nil {
@@ -20,24 +20,34 @@ var destroyCmd = &cobra.Command{
 		}
 
 		var wg sync.WaitGroup
+		var mu sync.Mutex
 
-		for _, v := range current {
+		for i := range current {
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				if err := provider.DeleteInstance(v.Region, v.Data.ID); err != nil {
-					fmt.Printf("arvancloud_compute_instance.%s: %v\n", v.Data.Name, err)
+				if err := provider.DeleteInstance(current[i].Region, current[i].Data.ID); err != nil {
+					fmt.Printf("arvancloud_compute_instance.%s: %v\n", current[i].Data.Name, err)
 					return
 				}
-				fmt.Printf("arvancloud_compute_instance.%s: Destruction complete\n", v.Data.Name)
+				fmt.Printf("arvancloud_compute_instance.%s: Destruction complete\n", current[i].Data.Name)
+
+				mu.Lock()
+				current = removeResource(current, i)
+				mu.Unlock()
 			}()
 		}
 
 		wg.Wait()
 
-		if err := state.WriteCurrentState([]api.ArvanInstanceResource{}); err != nil {
+		if err := state.WriteCurrentState(current); err != nil {
 			fmt.Println("update current state:", err)
 			return
 		}
 	},
+}
+
+func removeResource(s []api.ArvanInstanceResource, i int) []api.ArvanInstanceResource {
+	s[i] = s[len(s)-1]
+	return s[:len(s)-1]
 }

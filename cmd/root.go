@@ -3,14 +3,13 @@ package cmd
 import (
 	"os"
 
-	"github.com/0xAFz/kumo/cmd/iaas"
-	"github.com/0xAFz/kumo/cmd/status"
+	"github.com/0xAFz/r1/cmd/iaas"
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "Kumo",
-	Short: "Kumo is a tool for working with Cloud API's",
+	Use:   "r1",
+	Short: "ArvanCloud IaaS CLI Tool",
 }
 
 func Execute() {
@@ -22,5 +21,5 @@ func Execute() {
 
 func init() {
 	rootCmd.AddCommand(iaas.IaaSCmd)
-	rootCmd.AddCommand(status.StateCmd)
+	rootCmd.AddCommand(StateCmd)
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/0xAFz/kumo/cmd"
+	"github.com/0xAFz/r1/cmd"
 )
 
 func main() {

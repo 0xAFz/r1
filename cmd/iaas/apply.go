@@ -6,14 +6,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/0xAFz/kumo/internal/api"
-	"github.com/0xAFz/kumo/internal/state"
+	"github.com/0xAFz/r1/internal/api"
+	"github.com/0xAFz/r1/internal/state"
 	"github.com/spf13/cobra"
 )
 
 var applyCmd = &cobra.Command{
 	Use:   "apply",
-	Short: "Creates infrastructure according to kumo configuration files in the current directory.",
+	Short: "Creates infrastructure according to R1 configuration files in the current directory.",
 	Run: func(_ *cobra.Command, _ []string) {
 		desired, err := state.ReadDesiredState()
 		if err != nil {
@@ -58,11 +58,11 @@ var applyCmd = &cobra.Command{
 					}
 
 					start := time.Now()
-					waitCount := 1
+					waitCount := 5
 					for {
+						time.Sleep(time.Second * 5)
 						fmt.Printf("arvancloud_compute_instance.%s: Still creating... [%ds elapsed]\n", req.Data.Name, waitCount)
-						time.Sleep(time.Second * 1)
-						waitCount++
+						waitCount += 5
 						ins, err := provider.GetInstance(newResource.Region, newResource.Data.ID)
 						if err != nil {
 							fmt.Println(err)
