@@ -58,14 +58,14 @@ var applyCmd = &cobra.Command{
 					}
 
 					start := time.Now()
-					waitCount := 5
+					waitCount := 10
 					for {
-						time.Sleep(time.Second * 5)
+						time.Sleep(time.Second * 10)
 						fmt.Printf("arvancloud_compute_instance.%s: Still creating... [%ds elapsed]\n", req.Data.Name, waitCount)
-						waitCount += 5
+						waitCount += 10
 						ins, err := provider.GetInstance(newResource.Region, newResource.Data.ID)
 						if err != nil {
-							fmt.Println(err)
+							fmt.Printf("arvancloud_compute_instance.%s: %v", req.Data.Name, err)
 							continue
 						}
 						if ins.Data.Status != "ACTIVE" {
@@ -89,7 +89,7 @@ var applyCmd = &cobra.Command{
 				wg.Add(1)
 				go func() {
 					if err := provider.DeleteInstance(vm.Region, vm.Data.ID); err != nil {
-						fmt.Println(err)
+						fmt.Printf("arvancloud_compute_instance.%s: %v", vm.Data.Name, err)
 						return
 					}
 					fmt.Printf("arvancloud_compute_instance.%s: Destruction complete\n", vm.Data.Name)
