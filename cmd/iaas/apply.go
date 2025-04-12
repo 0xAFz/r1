@@ -2,6 +2,8 @@ package iaas
 
 import (
 	"fmt"
+	"log"
+	"sync"
 	"time"
 
 	"github.com/0xAFz/kumo/internal/api"
@@ -11,80 +13,94 @@ import (
 
 var applyCmd = &cobra.Command{
 	Use:   "apply",
-	Short: "Creates infrastructure according to Kumo configuration files in the current directory.",
+	Short: "Creates infrastructure according to kumo configuration files in the current directory.",
 	Run: func(_ *cobra.Command, _ []string) {
 		desired, err := state.ReadDesiredState()
 		if err != nil {
-			fmt.Println(err)
+			log.Fatal(err)
 			return
 		}
 		current, err := state.ReadCurrentState()
 		if err != nil {
-			fmt.Println(err)
+			log.Fatal(err)
 			return
 		}
 
-		desiredMap := make(map[string]api.IaasCreateRequest)
+		desiredMap := make(map[string]api.ArvanInstanceRequest)
 		for _, req := range desired {
 			desiredMap[req.Data.Name] = req
 		}
-		currentMap := make(map[string]api.IaasResource)
+		currentMap := make(map[string]api.ArvanInstanceResource)
 		for _, vm := range current {
 			currentMap[vm.Data.Name] = vm
 		}
 
-		var newState []api.IaasResource
+		var newState []api.ArvanInstanceResource
+
+		var wg sync.WaitGroup
 
 		for _, req := range desired {
-			if existing, exists := currentMap[req.Data.Name]; !exists || existing.Data.Status != "ACTIVE" {
+			if existing, exists := currentMap[req.Data.Name]; !exists {
+				wg.Add(1)
 				// Create VM if it doesn’t exist or isn’t active
-				resp, err := resourceManager.CreateResource(req)
-				if err != nil {
-					fmt.Printf("%s: %v\n", req.Data.Name, err)
-					continue
-				}
-				newResource := api.IaasResource{
-					Region:       req.Region,
-					IaasResponse: *resp,
-				}
-				start := time.Now()
-				waitCount := 1
-				for {
-					fmt.Printf("Waiting to create [%s] resource %d\n", req.Data.Name, waitCount)
-					time.Sleep(time.Second * 1)
-					waitCount++
-					r, err := resourceManager.GetResource(req.Region, resp.Data.ID)
+				go func() {
+					defer wg.Done()
+					fmt.Printf("arvancloud_compute_instance.%s: Creating...\n", req.Data.Name)
+					resp, err := provider.CreateInstance(req)
 					if err != nil {
-						fmt.Printf("failed to get resource: %v\n", err)
-						continue
+						fmt.Printf("%s: %v\n", req.Data.Name, err)
+						return
 					}
-					if r.Data.Status != "ACTIVE" {
-						continue
+
+					newResource := api.ArvanInstanceResource{
+						Region:        req.Region,
+						ArvanInstance: *resp,
 					}
-					newResource.Data = r.Data
-					break
-				}
-				fmt.Printf("Created: %s - %v\n", req.Data.Name, time.Since(start))
-				newState = append(newState, newResource)
+
+					start := time.Now()
+					waitCount := 1
+					for {
+						fmt.Printf("arvancloud_compute_instance.%s: Still creating... [%ds elapsed]\n", req.Data.Name, waitCount)
+						time.Sleep(time.Second * 1)
+						waitCount++
+						ins, err := provider.GetInstance(newResource.Region, newResource.Data.ID)
+						if err != nil {
+							fmt.Println(err)
+							continue
+						}
+						if ins.Data.Status != "ACTIVE" {
+							continue
+						}
+						newResource.Data = ins.Data
+						break
+					}
+					newState = append(newState, newResource)
+					fmt.Printf("arvancloud_compute_instance.%s: Creation complete after %v\n", req.Data.Name, time.Since(start))
+				}()
 			} else {
 				// Keep existing VM
 				newState = append(newState, existing)
 			}
 		}
 
-		// Process current state: delete unwanted VMs
+		// Process current state: destroy unwanted VMs
 		for name, vm := range currentMap {
 			if _, keep := desiredMap[name]; !keep {
-				if err := resourceManager.DeleteResource(vm.Region, vm.Data.ID); err != nil {
-					fmt.Println(err)
-					continue
-				}
-				fmt.Printf("Destroyed: %s\n", name)
+				wg.Add(1)
+				go func() {
+					if err := provider.DeleteInstance(vm.Region, vm.Data.ID); err != nil {
+						fmt.Println(err)
+						return
+					}
+					fmt.Printf("arvancloud_compute_instance.%s: Destruction complete\n", vm.Data.Name)
+				}()
 			}
 		}
 
+		wg.Wait()
+
 		if err := state.WriteCurrentState(newState); err != nil {
-			fmt.Println("update current state:", err)
+			log.Fatal(err)
 			return
 		}
 	},

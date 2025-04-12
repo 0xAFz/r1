@@ -9,17 +9,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var resourceManager *vm.ResourceManager
+var provider *vm.Provider
 
 var IaaSCmd = &cobra.Command{
 	Use:   "iaas",
 	Short: "Manage iaas actions",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		apiClient := api.NewAPIClient(vm.BaseURL, config.AppConfig.APIKey)
-		resourceManager = vm.NewResourceManager(apiClient)
+		apiClient := api.NewAPIClient(vm.BaseURL, config.AppConfig.ApiKey)
+		provider = vm.NewProvider(apiClient)
 	},
 	Run: func(_ *cobra.Command, _ []string) {
-		fmt.Println("Usage: kumo iaas <action>")
+		fmt.Println("action required")
 	},
 }
 
