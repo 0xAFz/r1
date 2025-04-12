@@ -1,6 +1,6 @@
 package api
 
-type iaasCreate struct {
+type ArvanInstanceSpecification struct {
 	Name             string           `json:"name"`
 	BackupName       *string          `json:"backup_name"`
 	Count            int              `json:"count"`
@@ -19,7 +19,15 @@ type iaasCreate struct {
 	ImageID          string           `json:"image_id"`
 }
 
-// type image struct {
+type ArvanAddress struct {
+	MacAddr  string `json:"mac_addr"`
+	Version  string `json:"version"`
+	Addr     string `json:"addr"`
+	Type     string `json:"type"`
+	IsPublic bool   `json:"is_public"`
+}
+
+// type ArvanImage struct {
 // 	ID       string `json:"id"`
 // 	Name     string `json:"name"`
 // 	OS       string `json:"os"`
@@ -33,13 +41,33 @@ type iaasCreate struct {
 // 	Documents []interface{} `json:"documents"`
 // }
 
-type IaasResponse struct {
+// type ArvanFlavor struct {
+// 	ID     string `json:"id"`
+// 	Name   string `json:"name"`
+// 	RAM    int    `json:"ram"`
+// 	Swap   string `json:"swap"`
+// 	VCPUs  int    `json:"vcpus"`
+// 	Disk   int    `json:"disk"`
+// }
+
+// type ArvanSecurityGroup struct {
+// 	ID          string   `json:"id"`
+// 	Description string   `json:"description"`
+// 	Name        string   `json:"name"`
+// 	ReadOnly    bool     `json:"readonly"`
+// 	Default     bool     `json:"default"`
+// 	RealName    string   `json:"real_name"`
+// 	Rules       interface{} `json:"rules"`
+// 	IPAddresses []string `json:"ip_addresses"`
+// }
+
+type ArvanInstance struct {
 	Data struct {
-		ID        string               `json:"id"`
-		Name      string               `json:"name"`
-		Status    string               `json:"status"`
-		Addresses map[string][]address `json:"addresses"`
-		Created   string               `json:"created"`
+		ID        string                    `json:"id"`
+		Name      string                    `json:"name"`
+		Status    string                    `json:"status"`
+		Addresses map[string][]ArvanAddress `json:"addresses"`
+		Created   string                    `json:"created"`
 		// Flavor flavor `json:"flavor"`
 		// Image  image  `json:"image"`
 		// Password       string               `json:"password"`
@@ -54,51 +82,12 @@ type IaasResponse struct {
 	// Message string `json:"message"`
 }
 
-// type flavor struct {
-// 	ID     string `json:"id"`
-// 	Name   string `json:"name"`
-// 	RAM    int    `json:"ram"`
-// 	Swap   string `json:"swap"`
-// 	VCPUs  int    `json:"vcpus"`
-// 	Disk   int    `json:"disk"`
-// }
-
-// type image struct {
-// 	ID       string            `json:"id"`
-// 	Name     string            `json:"name"`
-// 	OS       string            `json:"os"`
-// 	OSVersion string           `json:"os_version"`
-// 	Status   string            `json:"status"`
-// 	Username string            `json:"username"`
-// 	Metadata map[string]string `json:"metadata"`
-// 	Documents []interface{}    `json:"documents"`
-// }
-
-// type securityGroup struct {
-// 	ID          string   `json:"id"`
-// 	Description string   `json:"description"`
-// 	Name        string   `json:"name"`
-// 	ReadOnly    bool     `json:"readonly"`
-// 	Default     bool     `json:"default"`
-// 	RealName    string   `json:"real_name"`
-// 	Rules       interface{} `json:"rules"`
-// 	IPAddresses []string `json:"ip_addresses"`
-// }
-
-type address struct {
-	MacAddr  string `json:"mac_addr"`
-	Version  string `json:"version"`
-	Addr     string `json:"addr"`
-	Type     string `json:"type"`
-	IsPublic bool   `json:"is_public"`
+type ArvanInstanceRequest struct {
+	Region string `json:"region"`
+	Data   ArvanInstanceSpecification
 }
 
-type IaasCreateRequest struct {
+type ArvanInstanceResource struct {
 	Region string `json:"region"`
-	Data   iaasCreate
-}
-
-type IaasResource struct {
-	Region string `json:"region"`
-	IaasResponse
+	ArvanInstance
 }

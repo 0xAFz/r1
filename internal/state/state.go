@@ -13,12 +13,12 @@ const (
 	desired = "kumo.json"
 )
 
-func ReadDesiredState() ([]api.IaasCreateRequest, error) {
+func ReadDesiredState() ([]api.ArvanInstanceRequest, error) {
 	data, err := os.ReadFile(desired)
 	if err != nil {
 		return nil, fmt.Errorf("reading desired state: %v", err)
 	}
-	var reqs []api.IaasCreateRequest
+	var reqs []api.ArvanInstanceRequest
 	err = json.Unmarshal(data, &reqs)
 	if err != nil {
 		return nil, fmt.Errorf("unmarshaling desired state: %v", err)
@@ -26,15 +26,15 @@ func ReadDesiredState() ([]api.IaasCreateRequest, error) {
 	return reqs, nil
 }
 
-func ReadCurrentState() ([]api.IaasResource, error) {
+func ReadCurrentState() ([]api.ArvanInstanceResource, error) {
 	data, err := os.ReadFile(current)
 	if os.IsNotExist(err) {
-		return []api.IaasResource{}, nil
+		return []api.ArvanInstanceResource{}, nil
 	}
 	if err != nil {
 		return nil, fmt.Errorf("reading current state: %v", err)
 	}
-	var state []api.IaasResource
+	var state []api.ArvanInstanceResource
 	err = json.Unmarshal(data, &state)
 	if err != nil {
 		return nil, fmt.Errorf("unmarshaling current state: %v", err)
@@ -42,7 +42,7 @@ func ReadCurrentState() ([]api.IaasResource, error) {
 	return state, nil
 }
 
-func WriteCurrentState(state []api.IaasResource) error {
+func WriteCurrentState(state []api.ArvanInstanceResource) error {
 	file, err := json.MarshalIndent(state, "", "    ")
 	if err != nil {
 		return fmt.Errorf("marshaling current state: %v", err)

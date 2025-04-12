@@ -30,7 +30,7 @@ func NewAPIClient(baseURL, apiKey string) *APIClient {
 	}
 }
 
-func (c *APIClient) makeRequest(method, endpoint string, body interface{}) ([]byte, error) {
+func (c *APIClient) makeRequest(method, endpoint string, body any) ([]byte, error) {
 	url := fmt.Sprintf("%s%s", c.BaseURL, endpoint)
 
 	var requestBody []byte
@@ -38,13 +38,13 @@ func (c *APIClient) makeRequest(method, endpoint string, body interface{}) ([]by
 	if body != nil {
 		requestBody, err = json.Marshal(body)
 		if err != nil {
-			return nil, fmt.Errorf("error marshalling request body: %w", err)
+			return nil, fmt.Errorf("marshalling request body: %w", err)
 		}
 	}
 
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
 	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
+		return nil, fmt.Errorf("creating request: %w", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -68,7 +68,7 @@ func (c *APIClient) Get(endpoint string) ([]byte, error) {
 	return c.makeRequest(http.MethodGet, endpoint, nil)
 }
 
-func (c *APIClient) Post(endpoint string, body interface{}) ([]byte, error) {
+func (c *APIClient) Post(endpoint string, body any) ([]byte, error) {
 	return c.makeRequest(http.MethodPost, endpoint, body)
 }
 
