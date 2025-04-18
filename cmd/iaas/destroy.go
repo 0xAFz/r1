@@ -24,7 +24,7 @@ var destroyCmd = &cobra.Command{
 
 		for i := range current {
 			wg.Add(1)
-			go func() {
+			go func(i int) {
 				defer wg.Done()
 				if err := provider.DeleteInstance(current[i].Region, current[i].Data.ID); err != nil {
 					fmt.Printf("arvancloud_compute_instance.%s: %v\n", current[i].Data.Name, err)
@@ -35,7 +35,7 @@ var destroyCmd = &cobra.Command{
 				mu.Lock()
 				current = removeResource(current, i)
 				mu.Unlock()
-			}()
+			}(i)
 		}
 
 		wg.Wait()
