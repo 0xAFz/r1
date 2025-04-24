@@ -19,44 +19,37 @@ var destroyCmd = &cobra.Command{
 			return
 		}
 
-		var wg sync.WaitGroup
-		removeChan := make(chan int, len(current))
+		if len(current) == 0 {
+			fmt.Println("No objects need to be destroyed.")
+			return
+		}
 
-		for i := range current {
+		var wg sync.WaitGroup
+		var mu sync.Mutex
+		var nextState []api.ArvanInstanceResource
+
+		for _, v := range current {
+			resource := v
 			wg.Add(1)
-			go func(i int) {
+			go func() {
 				defer wg.Done()
-				if err := provider.DeleteInstance(current[i].Region, current[i].Data.ID); err != nil {
-					fmt.Printf("arvancloud_compute_instance.%s: %v\n", current[i].Data.Name, err)
+				if err := provider.DeleteInstance(resource.Region, resource.Data.ID); err != nil {
+					fmt.Printf("arvancloud_compute_instance.%s: %v\n", resource.Data.Name, err)
+					mu.Lock()
+					nextState = append(nextState, resource)
+					mu.Unlock()
 					return
 				}
-				fmt.Printf("arvancloud_compute_instance.%s: Destruction complete\n", current[i].Data.Name)
-				removeChan <- i
-			}(i)
+				fmt.Printf("arvancloud_compute_instance.%s: Destruction complete\n", resource.Data.Name)
+
+			}()
 		}
 
-		var removeIndexes []int
-		go func() {
-			wg.Wait()
-			close(removeChan)
-		}()
+		wg.Wait()
 
-		for i := range removeChan {
-			removeIndexes = append(removeIndexes, i)
-		}
-
-		for i := len(removeIndexes) - 1; i >= 0; i-- {
-			current = removeResource(current, removeIndexes[i])
-		}
-
-		if err := state.WriteCurrentState(current); err != nil {
+		if err := state.WriteCurrentState(nextState); err != nil {
 			fmt.Println("update current state:", err)
 			return
 		}
 	},
-}
-
-func removeResource(s []api.ArvanInstanceResource, i int) []api.ArvanInstanceResource {
-	s[i] = s[len(s)-1]
-	return s[:len(s)-1]
 }
